@@ -1,1 +1,36 @@
-# Docker Compose placeholder
+# docker/docker-compose.yml
+version: '3.8'
+
+services:
+  backend:
+    build: ../backend
+    container_name: backend
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    volumes:
+      - ../backend:/app
+    depends_on:
+      - fabric
+
+  fabric:
+    image: hyperledger/fabric-peer:2.5
+    container_name: fabric-peer
+    environment:
+      - CORE_PEER_ID=peer0.org1.example.com
+    ports:
+      - "7051:7051"
+    volumes:
+      - ../chaincode:/opt/gopath/src/github.com/chaincode
+
+  frontend:
+    build: ../frontend
+    container_name: frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../frontend:/app
+    command: ["npm", "run", "dev"]
+    depends_on:
+      - backend
