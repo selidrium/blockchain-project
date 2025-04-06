@@ -39,7 +39,7 @@ Make sure you have [Docker](https://www.docker.com/) and Docker Compose installe
 cd docker
 docker-compose up --build
 ```
-> This will start the backend, frontend, and blockchain peer services.
+This will start the backend, frontend, and blockchain peer services.
 
 💡 **System Requirements:** Your machine should have at least:
 - **32 GB RAM** (recommended for running ZEEK, Docker, and Fabric containers)
