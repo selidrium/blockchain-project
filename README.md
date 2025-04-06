@@ -27,8 +27,8 @@ Before starting, make sure you have:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Selidrium/blockchain-logging-system.git
-cd blockchain-logging-system
+git clone https://github.com/Selidrium/blockchain-poject.git
+cd blockchain-project
 ```
 
 ### 2. Install Docker & Docker Compose
