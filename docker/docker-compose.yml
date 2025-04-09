@@ -1,48 +1,64 @@
-# docker/docker-compose.yml
-version: '3.8'
 
 services:
   backend:
     build: ../backend
-    container_name: backend
+    container_name: logging-backend
     ports:
       - "3000:3000"
-    environment:
-      - PORT=3000
     volumes:
       - ../backend:/app
-    depends_on:
-      - fabric
-
-  fabric:
-    image: hyperledger/fabric-peer:2.5
-    container_name: fabric-peer
     environment:
-      - CORE_PEER_ID=peer0.org1.example.com
-    ports:
-      - "7051:7051"
-    volumes:
-      - ../chaincode:/opt/gopath/src/github.com/chaincode
+      - NODE_ENV=development
+      - PORT=3000
+    depends_on:
+      - fabric-peer
+    restart: unless-stopped
 
   frontend:
     build: ../frontend
-    container_name: frontend
+    container_name: logging-frontend
     ports:
       - "5173:5173"
     volumes:
       - ../frontend:/app
-    command: ["npm", "run", "dev"]
+    environment:
+      - NODE_ENV=development
     depends_on:
       - backend
-  
+    restart: unless-stopped
+
+  fabric-peer:
+    image: hyperledger/fabric-peer:2.5
+    container_name: fabric-peer
+    ports:
+      - "7051:7051"
+    volumes:
+      - ../fabric-network:/var/hyperledger/production
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer0.org1.example.com
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+    restart: unless-stopped
+
+  fabric-orderer:
+    image: hyperledger/fabric-orderer:2.5
+    container_name: fabric-orderer
+    ports:
+      - "7050:7050"
+    volumes:
+      - ../fabric-network:/var/hyperledger/production
+    environment:
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+    restart: unless-stopped
+
   zeek:
     image: zeek/zeek:latest
     container_name: zeek
     command: ["zeek", "-i", "eth0"]
-    network_mode: host  # Required to sniff traffic from host network
+    network_mode: host
     cap_add:
       - NET_ADMIN
       - NET_RAW
     volumes:
-      - ./zeek-logs:/usr/local/zeek/logs/current
+      - ../zeek-logs:/usr/local/zeek/logs/current
     restart: unless-stopped
