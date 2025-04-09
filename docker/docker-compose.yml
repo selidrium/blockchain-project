@@ -34,3 +34,15 @@ services:
     command: ["npm", "run", "dev"]
     depends_on:
       - backend
+  
+  zeek:
+    image: zeek/zeek:latest
+    container_name: zeek
+    command: ["zeek", "-i", "eth0"]
+    network_mode: host  # Required to sniff traffic from host network
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./zeek-logs:/usr/local/zeek/logs/current
+    restart: unless-stopped
