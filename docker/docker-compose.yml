@@ -1,4 +1,3 @@
-
 services:
   backend:
     build: ../backend
@@ -61,4 +60,14 @@ services:
       - NET_RAW
     volumes:
       - ../zeek-logs:/usr/local/zeek/logs/current
+    restart: unless-stopped
+
+  zeek-forwarder:
+    build: ../zeek-forwarder
+    container_name: zeek-forwarder
+    volumes:
+      - ../zeek-logs:/app/zeek-logs
+    depends_on:
+      - zeek
+      - backend
     restart: unless-stopped
