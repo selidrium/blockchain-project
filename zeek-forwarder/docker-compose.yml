@@ -1,0 +1,5 @@
+  zeek-forwarder:
+    build: ../zeek-forwarder
+    container_name: zeek-forwarder
+    depends_on:
+      - backend
